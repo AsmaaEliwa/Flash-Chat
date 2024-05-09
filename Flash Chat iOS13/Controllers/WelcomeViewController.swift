@@ -15,7 +15,7 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleLabel.text = "⚡️FlashChat" // much easier by using CLTypingLabel library
+        titleLabel.text = Constants.appName// much easier by using CLTypingLabel library
 //        titleLabel.text = ""
 //        let welcomText = "⚡️FlashChat"
 //        var idx = 0.0
