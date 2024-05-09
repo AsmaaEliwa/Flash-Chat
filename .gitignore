@@ -1,0 +1,7 @@
+# CocoaPods
+/Pods
+/Podfile.lock
+/Podfile
+# Firebase
+/GoogleService-Info.plist
+.DS_Store
