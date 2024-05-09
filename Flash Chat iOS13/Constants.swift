@@ -10,7 +10,7 @@ import Foundation
 struct Constants{
     static let appName = "⚡️FlashChat"
         static let cellIdentifier = "ReusableCell"
-        static let cellNibName = "MessageCell"
+        static let cellNibName = "MessageCellTableViewCell"
         static let registerSegue = "RegisterToChat"
         static let loginSegue = "LoginToChat"
         
