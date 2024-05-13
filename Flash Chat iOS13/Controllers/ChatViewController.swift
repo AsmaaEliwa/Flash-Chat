@@ -8,22 +8,46 @@
 
 import UIKit
 //import FirebaseCore
+import FirebaseFirestore
 import FirebaseAuth
 class ChatViewController: UIViewController {
-    let messages:[Message] = [Message(sender: "1@2.com", body: "hey!"),Message(sender: "asmaa@gmail.com", body: "hey, whats up"),Message(sender: "1@2.com", body: "good,do you wanna hang out!")]
+    let db = Firestore.firestore()
+    var messages:[Message] = []
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var messageTextfield: UITextField!
     
-    override func viewDidLoad() {
+    override func viewDidLoad()   {
         super.viewDidLoad()
+        Task { @MainActor in
+            await getMessages()
+            
+        }
         title = Constants.appName
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UINib(nibName: Constants.cellNibName, bundle: nil),forCellReuseIdentifier: Constants.cellIdentifier)
         navigationItem.hidesBackButton = true
+       
+        
     }
     
     @IBAction func sendPressed(_ sender: UIButton) {
+        Task { @MainActor in
+            if let messageBody = messageTextfield.text
+                ,let messageSender = Auth.auth().currentUser?.email{
+            
+             
+                do {
+                    let mes = try await db.collection(Constants.FStore.collectionName).addDocument(data: [
+                        Constants.FStore.senderField : messageSender  ,
+                        Constants.FStore.bodyField : messageBody
+                    ])
+                    print("message added with ID: \(mes.documentID)")
+                } catch {
+                    print("Error adding document: \(error)")
+                }
+            }
+        }
     }
     
     @IBAction func logOutButton(_ sender: UIBarButtonItem) {
@@ -52,6 +76,18 @@ extension ChatViewController:UITableViewDataSource{
         cell.messageLabel.text = messages[indexPath.row].body
         return cell
     }
-    
+    func getMessages() async{
+        do {
+            let mesagess = try await db.collection(Constants.FStore.collectionName).getDocuments()
+          for mess in mesagess.documents {
+              let newMessage = Message(sender: mess.data()["sender"]! as! String, body: mess.data()["body"] as! String)
+              
+              messages.append(newMessage)
+              
+          }
+        } catch {
+          print("Error getting documents: \(error)")
+        }
+    }
     
 }
