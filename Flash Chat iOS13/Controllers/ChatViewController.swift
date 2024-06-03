@@ -40,7 +40,8 @@ class ChatViewController: UIViewController {
                 do {
                     let mes = try await db.collection(Constants.FStore.collectionName).addDocument(data: [
                         Constants.FStore.senderField : messageSender  ,
-                        Constants.FStore.bodyField : messageBody
+                        Constants.FStore.bodyField : messageBody,
+                        Constants.FStore.dateField : Date().timeIntervalSince1970
                     ])
                     print("message added with ID: \(mes.documentID)")
                 } catch {
@@ -48,6 +49,7 @@ class ChatViewController: UIViewController {
                 }
             }
         }
+//        messageTextfield.text = ""
     }
     
     @IBAction func logOutButton(_ sender: UIBarButtonItem) {
@@ -77,18 +79,20 @@ extension ChatViewController:UITableViewDataSource{
         return cell
     }
     func getMessages() async{
-        do {
-            let mesagess = try await db.collection(Constants.FStore.collectionName).getDocuments()
-          for mess in mesagess.documents {
-              let newMessage = Message(sender: mess.data()["sender"]! as! String, body: mess.data()["body"] as! String)
-              
-              messages.append(newMessage)
-              tableView.reloadData()
-              
-          }
-        } catch {
-          print("Error getting documents: \(error)")
-        }
+        db.collection(Constants.FStore.collectionName).order(by: Constants.FStore.dateField).addSnapshotListener(includeMetadataChanges: true) { documentSnapshot, error in
+               self.messages = []
+                guard let document = documentSnapshot else {return }
+                for mess in document.documents {
+                        let newMessage = Message(sender: mess.data()["sender"]! as! String, body: mess.data()["body"] as! String)
+                        
+                    self.messages.append(newMessage)
+                        DispatchQueue.main.async{
+                            self.tableView.reloadData()
+                        }
+                        
+                    
+                }
+            }
     }
     
 }
