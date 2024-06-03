@@ -44,12 +44,13 @@ class ChatViewController: UIViewController {
                         Constants.FStore.dateField : Date().timeIntervalSince1970
                     ])
                     print("message added with ID: \(mes.documentID)")
+                            messageTextfield.text = ""
                 } catch {
                     print("Error adding document: \(error)")
                 }
             }
         }
-//        messageTextfield.text = ""
+
     }
     
     @IBAction func logOutButton(_ sender: UIBarButtonItem) {
@@ -101,6 +102,8 @@ extension ChatViewController:UITableViewDataSource{
                     self.messages.append(newMessage)
                         DispatchQueue.main.async{
                             self.tableView.reloadData()
+                            let index = IndexPath(row: self.messages.count - 1, section: 0)
+                            self.tableView.scrollToRow(at: index, at: .top, animated: true)
                         }
                         
                     
