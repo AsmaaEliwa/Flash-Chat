@@ -79,7 +79,8 @@ extension ChatViewController:UITableViewDataSource{
         return cell
     }
     func getMessages() async{
-        db.collection(Constants.FStore.collectionName).order(by: Constants.FStore.dateField).addSnapshotListener(includeMetadataChanges: true) { documentSnapshot, error in
+        db.collection(Constants.FStore.collectionName)
+            .order(by:Constants.FStore.dateField).addSnapshotListener(includeMetadataChanges: true) { documentSnapshot, error in
                self.messages = []
                 guard let document = documentSnapshot else {return }
                 for mess in document.documents {
