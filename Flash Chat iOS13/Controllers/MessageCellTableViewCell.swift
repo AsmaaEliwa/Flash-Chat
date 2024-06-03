@@ -11,12 +11,14 @@ import UIKit
 class MessageCellTableViewCell: UITableViewCell {
     @IBOutlet weak var messageLabel: UILabel!
     
+    @IBOutlet weak var reciverImage: UIImageView!
     @IBOutlet weak var senderImage: UIImageView!
     @IBOutlet weak var popupView: UIView!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         popupView.layer.cornerRadius = popupView.frame.size.height / 5
+      
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
