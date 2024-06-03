@@ -83,6 +83,7 @@ extension ChatViewController:UITableViewDataSource{
               let newMessage = Message(sender: mess.data()["sender"]! as! String, body: mess.data()["body"] as! String)
               
               messages.append(newMessage)
+              tableView.reloadData()
               
           }
         } catch {
